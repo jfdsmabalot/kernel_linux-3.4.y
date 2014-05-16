@@ -3963,7 +3963,11 @@ _scsih_qcmd_lck(struct scsi_cmnd *scmd, void (*done)(struct scsi_cmnd *))
 			else
 				mpi_control |= MPI2_SCSIIO_CONTROL_SIMPLEQ;
 		} else
-			mpi_control |= MPI2_SCSIIO_CONTROL_SIMPLEQ;
+/* MPI Revision I (UNIT = 0xA) - removed MPI2_SCSIIO_CONTROL_UNTAGGED */
+/*			mpi_control |= MPI2_SCSIIO_CONTROL_UNTAGGED;
+ */
+			mpi_control |= (0x500);
+
 	} else
 		mpi_control |= MPI2_SCSIIO_CONTROL_SIMPLEQ;
 	/* Make sure Device is not raid volume.
@@ -8086,6 +8090,7 @@ _scsih_suspend(struct pci_dev *pdev, pm_message_t state)
 
 	mpt2sas_base_free_resources(ioc);
 	pci_save_state(pdev);
+	pci_disable_device(pdev);
 	pci_set_power_state(pdev, device_state);
 	return 0;
 }
